@@ -1,0 +1,29 @@
+.container {
+    max-width: 1140px;
+    justify-content: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .form-group {
+        flex-direction: column;
+        display: flex;
+        align-content: space-around;
+        align-items: flex-start;
+        margin-top: 1%;
+
+        .form-control {
+            border: 1px solid grey !important;
+
+            &.is-invalid {
+                color: red;
+                border-radius: 3px;
+                ;
+                border: 1px solid red !important;
+            }
+        }
+    }
+}
