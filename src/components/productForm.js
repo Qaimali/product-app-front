@@ -1,11 +1,23 @@
-import React, { Fragment } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { Fragment, useState } from "react";
+import { Formik, Form, Field, ErrorMessage, isPromise } from "formik";
 import * as Yup from "yup";
 import "../sass/main.scss";
 import { fetchTasks, addtasks } from "../store/actions/product";
 import { useSelector, useDispatch } from "react-redux";
 import { storage } from "../firebase/firebase";
+import CircularProgressWithLabel from "./progressBar";
 const ProductForm = () => {
+  const allInputs = { imgUrl: "" };
+  const [imageAsFile, setImageAsFile] = useState("");
+  const [imageAsUrl, setImageAsUrl] = useState(allInputs);
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  console.log(imageAsFile);
+  const handleImageAsFile = (e, setFieldValue) => {
+    const image = e.target.files[0];
+    setImageAsFile(image);
+    setFieldValue("image", URL.createObjectURL(e.target.files[0]));
+  };
   const dispatch = useDispatch();
   return (
     <Fragment>
@@ -24,11 +36,53 @@ const ProductForm = () => {
           image: Yup.string().required("Product Image is required"),
         })}
         onSubmit={(fields) => {
+          setIsUploading(true);
           console.log(fields);
           alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields));
           console.log(fields);
-          dispatch(addtasks(fields.prod_name, fields.quantity, fields.image));
-          dispatch(fetchTasks());
+          // dispatch(addtasks(fields.prod_name, fields.quantity, fields.image));
+          // dispatch(fetchTasks());
+          if (imageAsFile === "") {
+            console.error(
+              `not an image, the image file is a ${typeof imageAsFile}`
+            );
+          }
+          const uploadTask = storage
+            .ref(`/images/${imageAsFile.name}`)
+            .put(imageAsFile);
+          uploadTask.on(
+            "state_changed",
+            (snapShot) => {
+              //takes a snap shot of the process as it is happening
+              console.log(snapShot);
+              var percent = Math.round(
+                (snapShot.bytesTransferred * 100) / snapShot.totalBytes
+              );
+              setProgress(percent);
+            },
+            (err) => {
+              //catches the errors
+              console.log(err);
+            },
+            () => {
+              // gets the functions from storage refences the image storage in firebase by the children
+              // gets the download url then sets the image from firebase as the value for the imgUrl key:
+              storage
+                .ref("images")
+                .child(imageAsFile.name)
+                .getDownloadURL()
+                .then((fireBaseUrl) => {
+                  setImageAsUrl((prevObject) => ({
+                    ...prevObject,
+                    imgUrl: fireBaseUrl,
+                  }));
+                  setIsUploading(false);
+                  dispatch(
+                    addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
+                  );
+                });
+            }
+          );
         }}
         render={({
           errors,
@@ -80,12 +134,7 @@ const ProductForm = () => {
                 name="file"
                 type="file"
                 accept="image/*"
-                onChange={(event) =>
-                  setFieldValue(
-                    "image",
-                    URL.createObjectURL(event.target.files[0])
-                  )
-                }
+                onChange={(event) => handleImageAsFile(event, setFieldValue)}
                 className={
                   "form-control" +
                   (errors.confirmPassword && touched.confirmPassword
@@ -106,6 +155,7 @@ const ProductForm = () => {
               <button type="submit" className="btn btn-primary mr-2">
                 Register
               </button>
+              {isUploading && <CircularProgressWithLabel value={progress} />}
             </div>
           </Form>
         )}
