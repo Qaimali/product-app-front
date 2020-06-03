@@ -5,14 +5,17 @@ import "../sass/main.scss";
 import { fetchTasks, addtasks } from "../store/actions/product";
 import { useSelector, useDispatch } from "react-redux";
 import { storage } from "../firebase/firebase";
+import { TextField, Button, Input } from "@material-ui/core";
 import CircularProgressWithLabel from "./progressBar";
 const ProductForm = () => {
+  //state
   const allInputs = { imgUrl: "" };
   const [imageAsFile, setImageAsFile] = useState("");
   const [imageAsUrl, setImageAsUrl] = useState(allInputs);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  console.log(imageAsFile);
+
+  //methods
   const handleImageAsFile = (e, setFieldValue) => {
     console.log(e.target.files[0]);
     const image = e.target.files[0];
@@ -20,13 +23,16 @@ const ProductForm = () => {
     setFieldValue("image", URL.createObjectURL(e.target.files[0]));
   };
   const dispatch = useDispatch();
+
+  //view
+
   return (
     <Fragment>
       <h3>Create Product</h3>
       <Formik
         initialValues={{
           prod_name: "",
-          quantity: 0,
+          quantity: undefined,
           image: "",
         }}
         validationSchema={Yup.object().shape({
@@ -38,15 +44,12 @@ const ProductForm = () => {
         })}
         onSubmit={(fields) => {
           setIsUploading(true);
-          console.log(fields);
-          alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields));
-          console.log(fields);
-          // dispatch(addtasks(fields.prod_name, fields.quantity, fields.image));
-          // dispatch(fetchTasks());
+
           if (imageAsFile === "") {
             console.error(
               `not an image, the image file is a ${typeof imageAsFile}`
             );
+            setIsUploading(false);
           }
           const uploadTask = storage
             .ref(`/images/${imageAsFile.name}`)
@@ -97,67 +100,76 @@ const ProductForm = () => {
         }) => (
           <Form className="form">
             <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <Field
-                name="prod_name"
-                type="text"
-                className={
-                  "form-control" +
-                  (errors.prod_name && touched.prod_name ? " is-invalid" : "")
-                }
-              />
-              <ErrorMessage
-                name="prod_name"
-                component="div"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Qunatity</label>
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={values.quantity}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              ></input>
-              <ErrorMessage
-                name="qunatity"
-                component="div"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Image</label>
+              <div className="input-group">
+                <TextField
+                  error={errors.prod_name && touched.prod_name ? 1 : 0}
+                  value={values.prod_name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="prod_name"
+                  label="Name"
+                  size="small"
+                  helperText={
+                    errors.prod_name && touched.prod_name
+                      ? errors.prod_name
+                      : null
+                  }
+                  className="input-field"
+                />
 
-              <input
-                id="file"
-                name="file"
-                type="file"
-                accept="image/*"
-                onChange={(event) => handleImageAsFile(event, setFieldValue)}
-                className={
-                  "form-control" +
-                  (errors.confirmPassword && touched.confirmPassword
-                    ? " is-invalid"
-                    : "")
-                }
-              />
-              <ErrorMessage
-                name="image"
-                component="div"
-                className="invalid-feedback"
-              />
-              <div>
-                <img src={values.image} width="30px" height="30px" />
+                <TextField
+                  error={errors.quantity && touched.quantity ? 1 : 0}
+                  name="quantity"
+                  value={values.quantity}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  label="Quatity"
+                  size="small"
+                  type="number"
+                  helperText={
+                    errors.quantity && touched.quantity ? errors.quantity : null
+                  }
+                  className="input-field"
+                />
+
+                <div className="upload-btn-wrapper input-field">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    className={
+                      errors.image && touched.image ? "button-error" : ""
+                    }
+                  >
+                    Upload Image
+                  </Button>
+                  <input
+                    id="file"
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleImageAsFile(event, setFieldValue)
+                    }
+                  />
+                </div>
               </div>
+
+              {values.image != "" && (
+                <div className="image-group">
+                  <img src={values.image} />
+                </div>
+              )}
             </div>
-            <div className="form-group">
-              <button type="submit" className="btn btn-primary mr-2">
-                Register
-              </button>
-              {isUploading && <CircularProgressWithLabel value={progress} />}
+            <div className="submit-div">
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                size="small"
+              >
+                Add
+              </Button>
+              {isUploading && <CircularProgressWithLabel value={50} />}
             </div>
           </Form>
         )}

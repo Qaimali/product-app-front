@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-
+import "../sass/main.scss";
 function CircularProgressWithLabel(props) {
   return (
-    <Box position="relative" display="inline-flex">
+    <Box position="relative" display="inline-flex" className="submit-buttons">
       <CircularProgress variant="static" {...props} />
       <Box
         top={0}

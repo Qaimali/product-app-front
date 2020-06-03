@@ -1,37 +1,82 @@
 .container {
-    max-width: 1140px;
-    justify-content: center;
+    margin: auto;
+    width: 60%;
+    padding: 10px;
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     .form-group {
-        flex-direction: column;
         display: flex;
-        align-content: space-around;
-        align-items: flex-start;
-        margin-top: 1%;
+        flex-direction: row;
+        width: 100%;
+        padding-bottom: 10px;
 
-        .form-control {
-            border: 1px solid grey !important;
+        .input-group {
+            flex-direction: column;
+            display: flex;
+            align-items: flex-start;
+            align-content: space-between;
+            margin-top: 1%;
+            width: 50%;
+            height: 100%;
 
-            &.is-invalid {
-                color: red;
-                border-radius: 3px;
-                ;
-                border: 1px solid red !important;
+            .input-field {
+                margin: 5px 0px 5px 2px;
+
+                .button-error {
+                    background-color: red;
+                    color: white;
+                }
+            }
+
+
+        }
+
+        .image-group {
+            width: 50%;
+            padding-left: 10px;
+
+            img {
+                width: 100%;
+                height: 100%;
             }
         }
     }
+
+    .submit-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+
 }
 
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
-    width: 40%;
+
+    border-radius: 4px;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 80%;
+    }
+
+    .card-info {
+        height: 20%;
+        display: flex;
+        flex-direction: column;
+
+        align-items: flex-start;
+        padding: 0px 0px 5px 5px;
+    }
 
     &:hover {
         box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
@@ -44,4 +89,39 @@
     border: 3px dashed #eeeeee;
     background-color: #fafafa;
     color: #bdbdbd;
+}
+
+.images-list {
+    display: flex;
+    padding: 10px 0px 0px 5px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-top: 2%;
+    gap: 0.7rem;
+
+    .card {
+        width: 100%;
+    }
+
+
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
 }
