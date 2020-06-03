@@ -1,14 +1,14 @@
 import firebase from "firebase/app";
 import "firebase/storage";
 var firebaseConfig = {
-  apiKey: "AIzaSyDv5pHMEuGkaulOFX-9yEzPSGmfp8TW_dg",
-  authDomain: "product-app-image-upload.firebaseapp.com",
-  databaseURL: "https://product-app-image-upload.firebaseio.com",
-  projectId: "product-app-image-upload",
-  storageBucket: "product-app-image-upload.appspot.com",
-  messagingSenderId: "1061301232271",
-  appId: "1:1061301232271:web:8284c52bdd0285cc1cc6fa",
-  measurementId: "G-4Q29T144CZ",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_AUTH_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
