@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchTasks } from "../store/actions/product";
 import Card from "./card";
@@ -10,7 +10,6 @@ const ProductList = (props) => {
   useEffect(() => {
     dispatch(fetchTasks());
   }, []);
-  console.log(product_list);
   return (
     <Fragment>
       <h3>Products</h3>
@@ -24,7 +23,7 @@ const ProductList = (props) => {
               quantity={elem.quantity}
             />
           ))}
-        {product_list && product_list.length == 0 && (
+        {product_list && product_list.length === 0 && (
           <div>
             <b>No Product Availble, Add some!</b>
           </div>

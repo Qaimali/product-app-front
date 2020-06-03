@@ -1,27 +1,64 @@
 import React, { Fragment, useState } from "react";
-import { Formik, Form, Field, ErrorMessage, isPromise } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import "../sass/main.scss";
 import { fetchTasks, addtasks } from "../store/actions/product";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { storage } from "../firebase/firebase";
-import { TextField, Button, Input } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
 import CircularProgressWithLabel from "./progressBar";
 const ProductForm = () => {
   //state
-  const allInputs = { imgUrl: "" };
   const [imageAsFile, setImageAsFile] = useState("");
-  const [imageAsUrl, setImageAsUrl] = useState(allInputs);
+
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
   //methods
   const handleImageAsFile = (e, setFieldValue) => {
-    console.log(e.target.files[0]);
     const image = e.target.files[0];
     setImageAsFile(image);
     setFieldValue("image", URL.createObjectURL(e.target.files[0]));
   };
+
+  const submitImage = (fields) => {
+    if (imageAsFile === "") {
+      setIsUploading(false);
+    } else {
+      const uploadTask = storage
+        .ref(`/images/${imageAsFile.name}`)
+        .put(imageAsFile);
+      uploadTask.on(
+        "state_changed",
+        (snapShot) => {
+          var percent = Math.round(
+            (snapShot.bytesTransferred * 100) / snapShot.totalBytes
+          );
+          setProgress(percent);
+        },
+        (err) => {
+          //catches the errors
+          console.log(err);
+        },
+        () => {
+          // gets the functions from storage refences the image storage in firebase by the children
+          // gets the download url then sets the image from firebase as the value for the imgUrl key:
+          storage
+            .ref("images")
+            .child(imageAsFile.name)
+            .getDownloadURL()
+            .then((fireBaseUrl) => {
+              setIsUploading(false);
+              dispatch(
+                addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
+              );
+              dispatch(fetchTasks());
+            });
+        }
+      );
+    }
+  };
+
   const dispatch = useDispatch();
 
   //view
@@ -44,50 +81,7 @@ const ProductForm = () => {
         })}
         onSubmit={(fields) => {
           setIsUploading(true);
-
-          if (imageAsFile === "") {
-            console.error(
-              `not an image, the image file is a ${typeof imageAsFile}`
-            );
-            setIsUploading(false);
-          }
-          const uploadTask = storage
-            .ref(`/images/${imageAsFile.name}`)
-            .put(imageAsFile);
-          uploadTask.on(
-            "state_changed",
-            (snapShot) => {
-              //takes a snap shot of the process as it is happening
-              console.log(snapShot);
-              var percent = Math.round(
-                (snapShot.bytesTransferred * 100) / snapShot.totalBytes
-              );
-              setProgress(percent);
-            },
-            (err) => {
-              //catches the errors
-              console.log(err);
-            },
-            () => {
-              // gets the functions from storage refences the image storage in firebase by the children
-              // gets the download url then sets the image from firebase as the value for the imgUrl key:
-              storage
-                .ref("images")
-                .child(imageAsFile.name)
-                .getDownloadURL()
-                .then((fireBaseUrl) => {
-                  setImageAsUrl((prevObject) => ({
-                    ...prevObject,
-                    imgUrl: fireBaseUrl,
-                  }));
-                  setIsUploading(false);
-                  dispatch(
-                    addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
-                  );
-                  dispatch(fetchTasks());
-                });
-            }
-          );
+          submitImage(fields);
         }}
         render={({
           errors,
@@ -154,9 +148,9 @@ const ProductForm = () => {
                 </div>
               </div>
 
-              {values.image != "" && (
+              {values.image !== "" && (
                 <div className="image-group">
-                  <img src={values.image} />
+                  <img src={values.image} alt="product " />
                 </div>
               )}
             </div>

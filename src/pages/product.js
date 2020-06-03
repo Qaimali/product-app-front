@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProductForm from "../components/productForm";
 import ProductList from "../components/productList";
 import "../sass/main.scss";

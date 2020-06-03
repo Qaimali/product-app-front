@@ -11,8 +11,6 @@ export function fetchTasks() {
     response
       .json()
       .then((data) => {
-        console.log("data fetched");
-        console.log(data);
         store.dispatch({
           type: FETCH_PRODUCTS,
           payload: data.products,
@@ -31,7 +29,7 @@ export function addtasks(name, quantity, imageUrl) {
     quantity: quantity,
     imageUrl: imageUrl,
   };
-  console.log(addtasks);
+
   fetch(API_BASE_URL + "add_product", {
     method: "POST",
     headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -41,7 +39,6 @@ export function addtasks(name, quantity, imageUrl) {
     response
       .json()
       .then((data) => {
-        console.log("data");
         store.dispatch({
           type: ADD_PRODUCT,
           payload: data,

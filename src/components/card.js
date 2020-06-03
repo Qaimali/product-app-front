@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../sass/main.scss";
 const Card = (props) => {
   return (

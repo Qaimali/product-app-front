@@ -24,7 +24,7 @@ const DropFile = (props) => {
         "state_changed",
         (snapShot) => {
           //takes a snap shot of the process as it is happening
-          console.log(snapShot);
+
           var percent = Math.round(
             (snapShot.bytesTransferred * 100) / snapShot.totalBytes
           );
@@ -42,7 +42,6 @@ const DropFile = (props) => {
             .child(imageAsFile.name)
             .getDownloadURL()
             .then((fireBaseUrl) => {
-              console.log(fireBaseUrl);
               setIsUploading(false);
               setFileNames((files) => [...files, acceptedFiles[0].name]);
             });
