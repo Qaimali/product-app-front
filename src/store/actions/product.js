@@ -15,7 +15,7 @@ export function fetchTasks() {
         console.log(data);
         store.dispatch({
           type: FETCH_PRODUCTS,
-          payload: data,
+          payload: data.products,
         });
         return;
       })

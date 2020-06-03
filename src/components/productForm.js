@@ -14,6 +14,7 @@ const ProductForm = () => {
   const [progress, setProgress] = useState(0);
   console.log(imageAsFile);
   const handleImageAsFile = (e, setFieldValue) => {
+    console.log(e.target.files[0]);
     const image = e.target.files[0];
     setImageAsFile(image);
     setFieldValue("image", URL.createObjectURL(e.target.files[0]));
@@ -80,6 +81,7 @@ const ProductForm = () => {
                   dispatch(
                     addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
                   );
+                  dispatch(fetchTasks());
                 });
             }
           );
