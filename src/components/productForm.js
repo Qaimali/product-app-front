@@ -21,7 +21,7 @@ const ProductForm = () => {
     setFieldValue("image", URL.createObjectURL(e.target.files[0]));
   };
 
-  const submitImage = (fields) => {
+  const submitImage = (fields, resetForm) => {
     if (imageAsFile === "") {
       setIsUploading(false);
     } else {
@@ -53,6 +53,7 @@ const ProductForm = () => {
                 addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
               );
               dispatch(fetchTasks());
+              resetForm();
             });
         }
       );
@@ -69,7 +70,7 @@ const ProductForm = () => {
       <Formik
         initialValues={{
           prod_name: "",
-          quantity: undefined,
+          quantity: 0,
           image: "",
         }}
         validationSchema={Yup.object().shape({
@@ -79,9 +80,9 @@ const ProductForm = () => {
             .required("Product Quantity is required"),
           image: Yup.string().required("Product Image is required"),
         })}
-        onSubmit={(fields) => {
+        onSubmit={(fields, { resetForm }) => {
           setIsUploading(true);
-          submitImage(fields);
+          submitImage(fields, resetForm);
         }}
         render={({
           errors,
@@ -117,7 +118,7 @@ const ProductForm = () => {
                   value={values.quantity}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  label="Quatity"
+                  label="Quantity"
                   size="small"
                   type="number"
                   helperText={
@@ -160,6 +161,7 @@ const ProductForm = () => {
                 color="primary"
                 variant="contained"
                 size="small"
+                disabled={isUploading ? true : false}
               >
                 Add
               </Button>
