@@ -2,12 +2,16 @@ import React from "react";
 import ProductForm from "../components/productForm";
 import ProductList from "../components/productList";
 import "../sass/main.scss";
-const Product = (props) => {
+import { ProductProvider } from "../context/productContext";
+
+const Product = () => {
   return (
-    <div className="container">
-      <ProductForm />
-      <ProductList />
-    </div>
+    <ProductProvider>
+      <div className="container">
+        <ProductForm />
+        <ProductList />
+      </div>
+    </ProductProvider>
   );
 };
 export default Product;

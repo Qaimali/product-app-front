@@ -1,14 +1,12 @@
 import React, { useEffect, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchTasks } from "../store/actions/product";
 import Card from "./card";
 import "../sass/main.scss";
+import { ProductContext } from "../context/productContext";
 const ProductList = (props) => {
-  const product_list = useSelector((state) => state.product_reducers.products);
-
-  const dispatch = useDispatch();
+  const { fetchTasks, product_list } = React.useContext(ProductContext);
+  console.log(product_list);
   useEffect(() => {
-    dispatch(fetchTasks());
+    fetchTasks();
   }, []);
   return (
     <Fragment>

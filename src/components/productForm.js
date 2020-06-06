@@ -2,17 +2,20 @@ import React, { Fragment, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import "../sass/main.scss";
-import { fetchTasks, addtasks } from "../store/actions/product";
-import { useDispatch } from "react-redux";
 import { storage } from "../firebase/firebase";
 import { TextField, Button } from "@material-ui/core";
 import CircularProgressWithLabel from "./progressBar";
+import { ProductContext } from "../context/productContext";
+
 const ProductForm = () => {
   //state
   const [imageAsFile, setImageAsFile] = useState("");
 
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  //context methods
+  const { addTasks } = React.useContext(ProductContext);
 
   //methods
   const handleImageAsFile = (e, setFieldValue) => {
@@ -49,18 +52,14 @@ const ProductForm = () => {
             .getDownloadURL()
             .then((fireBaseUrl) => {
               setIsUploading(false);
-              dispatch(
-                addtasks(fields.prod_name, fields.quantity, fireBaseUrl)
-              );
-              dispatch(fetchTasks());
+              addTasks(fields.prod_name, fields.quantity, fireBaseUrl);
+              //fetchTasks();
               resetForm();
             });
         }
       );
     }
   };
-
-  const dispatch = useDispatch();
 
   //view
 
@@ -145,6 +144,7 @@ const ProductForm = () => {
                     onChange={(event) =>
                       handleImageAsFile(event, setFieldValue)
                     }
+                    //style={{display:'none'}}
                   />
                 </div>
               </div>
