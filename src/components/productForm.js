@@ -11,7 +11,7 @@ const ProductForm = () => {
   //state
   const [imageAsFile, setImageAsFile] = useState("");
 
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); //besides of using states of form , better approach is to use formik ,formik manages forms without pain
   const [progress, setProgress] = useState(0);
 
   //context methods
